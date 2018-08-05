@@ -43,7 +43,7 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb".  
+The code for this step is contained in the first code cell of the IPython notebook located in "./solution.ipynb".  
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -154,6 +154,11 @@ Here's a [link to my video result](./result.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-I had a lot of problems with the correct filtering, since if there was another car next to the ego car, it did produce some artefacts, that I couldn't get rid of. I think the worst what can happen, is the long yellow truck at the right side of the ego car.
-I found it helpful using not just HLS but also HSV color spaces. I spent also a lot of time to find the corrrect number of prevoius frame to take a mean from.
-In order to make it more robust I could mark the result as unusable of the current frame if the distance to the center from previous frame varies above certain treshold. I als believe, the line could perform better if I would take median and not the mean of the points. 
+I had a lot of problems with the correct filtering, since if there was another car next to the ego car, it did produce some artefacts, that I couldn't get rid of. 
+In my second submittion I changed the portion of the picture, where I take a histogram of, thus I could start from the right lower point. However, sometimes, there is no any points visible of the right line in the bottom of the frame.  
+What could probably help is to start als from the top of the frame, or from both sides and try to "meet" in the middle.
+
+Stil, I think the worst what can happen, is the long yellow truck at the right side of the ego car, that is very close to our lane.
+I tried different color spaces and the best combination was to use hsl and lab color spaces. I tried different approaches to identify the yellow line, this combination was the best one for me.
+I spent also a lot of time to find the corrrect number of prevoius frame to take a mean from. Then as I was told in my review, I discarded the lines, where the distance to the center is very high(> 70 cm) and just kept the median of prevoius two identified lines.
+There was many points in time, when the performance was drastically droping while trying out new approaches.
